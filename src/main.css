@@ -30,3 +30,38 @@ input[type="text"], input[type="number"] {
     border-radius: 5px;
     border: 1px solid #ccc;
 }
+
+/* Estilo para el contenedor del carrito de compras */
+.cart-item{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.cart-info{
+  margin-right: 10px;
+}
+
+.cart-actions{
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-qty{
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.btn-delete{
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  background: #dc3545;
+}
+
+.btn-delete:hover{
+  background: #b52a37;
+}

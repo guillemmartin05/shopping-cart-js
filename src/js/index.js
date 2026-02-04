@@ -1,4 +1,3 @@
-
 import { Carrito } from './carrito.js';
 import { Producto } from './producto.js'; 
 import { ProductoFisico } from './productoFisico.js';
@@ -72,7 +71,6 @@ buscarBtn.addEventListener("click", () => {
 });
 
 
-
 // Funcion para actualizar el contenido del carrito cada vez que se hace un cambio. Elimina el anterior para que no se acumule el anterior con el nuevo
 function actualizarCarrito() {
     carritoContenido.innerHTML = ''; // Limpiar el contenido actual
@@ -89,12 +87,24 @@ function actualizarCarrito() {
     // Crear los elementos del carrito con botones para sumar, restar y eliminar
     const productos = productosCarrito.split('\n');
     productos.forEach((detalle, index) => {
+
+        // li principal
         const li = document.createElement("li");
-        li.textContent = detalle;
+        li.classList.add("cart-item");
+
+        // texto/info a la izquierda
+        const info = document.createElement("span");
+        info.classList.add("cart-info");
+        info.textContent = detalle;
+
+        // contenedor de botones a la derecha
+        const acciones = document.createElement("div");
+        acciones.classList.add("cart-actions");
 
         // Botón de aumentar cantidad
         const btnAumentar = document.createElement("button");
         btnAumentar.textContent = "+";
+        btnAumentar.classList.add("btn-qty");
         btnAumentar.addEventListener("click", () => {
             const idProducto = carrito.productos[index].id;
             carrito.cambiarCantidadProducto(idProducto, 1); // Aumentar cantidad con metodo
@@ -104,6 +114,7 @@ function actualizarCarrito() {
         // Botón de disminuir cantidad
         const btnDisminuir = document.createElement("button");
         btnDisminuir.textContent = "-";
+        btnDisminuir.classList.add("btn-qty");
         btnDisminuir.addEventListener("click", () => {
             const idProducto = carrito.productos[index].id;
             carrito.cambiarCantidadProducto(idProducto, -1); // Disminuye cantidad con método
@@ -113,23 +124,27 @@ function actualizarCarrito() {
         // Botón de eliminar producto
         const btnEliminar = document.createElement("button");
         btnEliminar.textContent = "Eliminar";
+        btnEliminar.classList.add("btn-delete");
         btnEliminar.addEventListener("click", () => {
             const idProducto = carrito.productos[index].id;
             carrito.eliminarProducto(idProducto); // Eliminar producto
             actualizarCarrito();
         });
 
-        // Añadir botones al `li`
-        li.appendChild(btnAumentar);
-        li.appendChild(btnDisminuir);
-        li.appendChild(btnEliminar);
+        // Añadir botones al contenedor acciones
+        acciones.appendChild(btnAumentar);
+        acciones.appendChild(btnDisminuir);
+        acciones.appendChild(btnEliminar);
+
+        // Montaje final del li
+        li.appendChild(info);
+        li.appendChild(acciones);
         carritoContenido.appendChild(li);
     });
 }
 
 // Funcion para el carrito actualice al cargar  página
 actualizarCarrito();
-
 
 
 

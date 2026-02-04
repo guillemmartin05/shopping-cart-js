@@ -1,51 +1,52 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Carrito de Compras</title>
+  <title>Carrito de Compras</title>
 
-    <script defer src="js/bundle.js"></script>
-    <link rel="stylesheet" href="main.css" />
-  </head>
+  <script defer src="js/bundle.js"></script>
+  <link rel="stylesheet" href="main.css" />
+</head>
 
-  <body>
-    <h1>Carrito de Compras</h1>
+<body>
 
-    <div>
-      <h3>Añadir Producto</h3>
+<h1>Carrito de Compras</h1>
 
-      <label for="producto-nombre">Nombre del Producto:</label>
-      <input id="producto-nombre" placeholder="Nombre del producto" />
+<div>
+  <h3>Añadir Producto</h3>
 
-      <label for="producto-precio">Precio:</label>
-      <input
-        type="number"
-        id="producto-precio"
-        placeholder="Precio del producto"
-      />
+  <label for="producto-nombre">Nombre del Producto:</label>
+  <input id="producto-nombre" placeholder="Nombre del producto" />
 
-      <label for="producto-stock">Stock:</label>
-      <input
-        type="number"
-        id="producto-stock"
-        placeholder="Cantidad en stock"
-      />
+  <label for="producto-precio">Precio:</label>
+  <input type="number" id="producto-precio" placeholder="Precio del producto" />
 
-      <button id="añadir">Añadir al carrito</button>
-    </div>
+  <label for="producto-stock">Cantidad:</label>
+  <input type="number" id="producto-stock" placeholder="Cantidad" />
 
-    <div>
-      <h3>Buscar producto en su carrito</h3>
+  <button id="añadir">Añadir al carrito</button>
+</div>
 
-      <input id="producto-buscar" placeholder="Introduzca el producto" />
-      <button id="buscar">Buscar</button>
-    </div>
+<div>
+  <h3>Buscar producto en su carrito</h3>
 
-    <div>
-      <h2>Contenido del Carrito</h2>
-      <ul id="carrito-contenido"></ul>
-    </div>
-  </body>
+  <input id="producto-buscar" placeholder="Introduzca el producto" />
+  <button id="buscar">Buscar</button>
+</div>
+
+<div>
+  <h2>Contenido del Carrito</h2>
+
+  <ul id="carrito-contenido"></ul>
+
+  <!-- TOTAL -->
+  <p style="margin-top:12px;">
+    <strong>Total del carrito:</strong>
+    <span id="carrito-total">0.00</span> €
+  </p>
+</div>
+
+</body>
 </html>

@@ -5,48 +5,44 @@ import { ProductoDescargable } from './productoDescargable.js';
 require('materialize-css');
 import '../main.css';
 
-// Inicialización objeto carrito de clase Carrito para empezzar
+// Inicialización objeto carrito de clase Carrito para empezar
 const carrito = new Carrito();
 
-// Elementos del html con los que interactuaremos para que todo funcione ok y las guardamos en constantes
+// Elementos del html
 const productoNombre = document.getElementById("producto-nombre");
 const productoPrecio = document.getElementById("producto-precio");
 const productoStock = document.getElementById("producto-stock");
 const añadirBtn = document.getElementById("añadir");
 const carritoContenido = document.getElementById("carrito-contenido");
-const productoBuscar = document.getElementById("producto-buscar");  // Input de búsqueda
-const buscarBtn = document.getElementById("buscar");  // Botón de búsqueda
+const productoBuscar = document.getElementById("producto-buscar");
+const buscarBtn = document.getElementById("buscar");
 
-/* 
-Cuando user haga click en el boton para añadir, se hace esta validación previa. Primero guarda los inputs del user en variables y en caso de que todos los
-campos no se hayan llenado correctamente, saltará alerta
-*/
+// NUEVO: elemento donde mostraremos el total
+const carritoTotal = document.getElementById("carrito-total");
+
+// Añadir producto
 añadirBtn.addEventListener("click", () => {
-    const nombre = productoNombre.value.trim(); //trim elimina espacios en blanco tanto principio como final para que no haya futuros errores
-    const precio = parseFloat(productoPrecio.value); 
+    const nombre = productoNombre.value.trim();
+    const precio = parseFloat(productoPrecio.value);
     const stock = parseInt(productoStock.value);
 
-    //si no estan los campos llenos o correctamente, mensaje de alerta
     if (!nombre || isNaN(precio) || isNaN(stock)) {
         alert("Por favor, complete todos los campos correctamente para añadir un nuevo producto");
         return;
     }
 
-    // Crear el producto y lo añade al carrito usando el metodo
-    const nuevoProducto = new Producto(Date.now(), nombre, precio, stock); 
+    const nuevoProducto = new Producto(Date.now(), nombre, precio, stock);
     carrito.añadirProducto(nuevoProducto);
     alert("Se ha añadido correctamente un producto a su carrito");
 
-    // Limpiar los campos para no tener que borrarlos manualmente si queremos ir añadiendo más cosas
     productoNombre.value = '';
     productoPrecio.value = '';
     productoStock.value = '';
 
-    // Actualizar el estado del carrito
     actualizarCarrito();
 });
 
-// Función para buscar un producto en el carrito
+// Buscar producto
 buscarBtn.addEventListener("click", () => {
     const nombreBuscado = productoBuscar.value.trim();
 
@@ -55,96 +51,93 @@ buscarBtn.addEventListener("click", () => {
         return;
     }
 
-    // Llamar al método buscarProducto
     const resultado = carrito.buscarProducto(nombreBuscado);
 
     if (resultado) {
-        // Si el producto es encontrado, mostrar sus detalles usando el metodo
         alert(`Producto encontrado: ${resultado.mostrarDetalles()}`);
     } else {
-        // Si no se encuentra, mostra un mensaje de alerta
         alert("Producto no encontrado");
     }
 
-    // Limpiar el campo de búsqueda
     productoBuscar.value = '';
 });
 
-
-// Funcion para actualizar el contenido del carrito cada vez que se hace un cambio. Elimina el anterior para que no se acumule el anterior con el nuevo
+// Actualizar carrito (pinta + calcula total)
 function actualizarCarrito() {
-    carritoContenido.innerHTML = ''; // Limpiar el contenido actual
-    const productosCarrito = carrito.mostrarProductos();
+    carritoContenido.innerHTML = '';
 
-    // Si no hay productos en el carrito, mostrar mensaje de que esta vacio
+    // Si el carrito está vacío (tu clase devuelve un string)
+    const productosCarrito = carrito.mostrarProductos();
     if (productosCarrito === "El carrito está vacío. Por favor, añada algun producto.") {
         const mensaje = document.createElement("p");
         mensaje.textContent = productosCarrito;
         carritoContenido.appendChild(mensaje);
+
+        // NUEVO: total a 0 si está vacío
+        if (carritoTotal) carritoTotal.textContent = "0.00";
         return;
     }
 
-    // Crear los elementos del carrito con botones para sumar, restar y eliminar
-    const productos = productosCarrito.split('\n');
-    productos.forEach((detalle, index) => {
+    // NUEVO: calculamos el total real del carrito
+    let total = 0;
 
-        // li principal
+    // IMPORTANTE: en vez de usar el string "detalle", usamos el array real de productos
+    carrito.productos.forEach((producto) => {
         const li = document.createElement("li");
         li.classList.add("cart-item");
 
-        // texto/info a la izquierda
         const info = document.createElement("span");
         info.classList.add("cart-info");
-        info.textContent = detalle;
 
-        // contenedor de botones a la derecha
+        const subtotal = producto.precio * producto.stock;
+        total += subtotal;
+
+        info.textContent =
+            `Producto: ${producto.nombre}, Cantidad: ${producto.stock}, ` +
+            `Precio: ${producto.precio.toFixed(2)}€, Subtotal: ${subtotal.toFixed(2)}€`;
+
         const acciones = document.createElement("div");
         acciones.classList.add("cart-actions");
 
-        // Botón de aumentar cantidad
+        // Botón +
         const btnAumentar = document.createElement("button");
         btnAumentar.textContent = "+";
         btnAumentar.classList.add("btn-qty");
         btnAumentar.addEventListener("click", () => {
-            const idProducto = carrito.productos[index].id;
-            carrito.cambiarCantidadProducto(idProducto, 1); // Aumentar cantidad con metodo
+            carrito.cambiarCantidadProducto(producto.id, 1);
             actualizarCarrito();
         });
 
-        // Botón de disminuir cantidad
+        // Botón -
         const btnDisminuir = document.createElement("button");
         btnDisminuir.textContent = "-";
         btnDisminuir.classList.add("btn-qty");
         btnDisminuir.addEventListener("click", () => {
-            const idProducto = carrito.productos[index].id;
-            carrito.cambiarCantidadProducto(idProducto, -1); // Disminuye cantidad con método
+            carrito.cambiarCantidadProducto(producto.id, -1);
             actualizarCarrito();
         });
 
-        // Botón de eliminar producto
+        // Botón eliminar
         const btnEliminar = document.createElement("button");
         btnEliminar.textContent = "Eliminar";
         btnEliminar.classList.add("btn-delete");
         btnEliminar.addEventListener("click", () => {
-            const idProducto = carrito.productos[index].id;
-            carrito.eliminarProducto(idProducto); // Eliminar producto
+            carrito.eliminarProducto(producto.id);
             actualizarCarrito();
         });
 
-        // Añadir botones al contenedor acciones
         acciones.appendChild(btnAumentar);
         acciones.appendChild(btnDisminuir);
         acciones.appendChild(btnEliminar);
 
-        // Montaje final del li
         li.appendChild(info);
         li.appendChild(acciones);
         carritoContenido.appendChild(li);
     });
+
+    // NUEVO: pintar el total del carrito
+    if (carritoTotal) carritoTotal.textContent = total.toFixed(2);
 }
 
-// Funcion para el carrito actualice al cargar  página
+// Al cargar la página
 actualizarCarrito();
-
-
-
